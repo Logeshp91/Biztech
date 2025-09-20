@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "655668045924",
+    "project_id": "bisco-c4224",
+    "storage_bucket": "bisco-c4224.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:655668045924:android:c7beed8f93a7cec46b9771",
+        "android_client_info": {
+          "package_name": "com.biztech"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxFzzHdjhnXwDBHqNnZnkg9XvsZLlUJUU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
