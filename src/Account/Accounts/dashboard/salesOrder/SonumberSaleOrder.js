@@ -46,8 +46,9 @@ const navigation = useNavigation();
   const [partnerAddresses, setPartnerAddresses] = useState({});
   const [showProductsClicked, setShowProductsClicked] = useState(false);
   const [expandedProductId, setExpandedProductId] = useState(null);
-  const [expandedSummary, setExpandedSummary] = useState(false);
 
+
+  
   const colWidths = [150, 80, 40, 60, 60, 100];
   const partnerAddressMap = Object.fromEntries(
     partnerAddressesData.map(addr => [addr.id, addr])

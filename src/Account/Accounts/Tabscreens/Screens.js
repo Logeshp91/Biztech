@@ -27,7 +27,7 @@ const Screens = () => {
   const [todayFollowUps, setTodayFollowUps] = useState([]);
   const [totalListCount, setTotalListCount] = useState(0);
   const [completedCount, setCompletedCount] = useState(0);
-  const [approvalPendingCount, setApprovalPendingCount] = useState(0);
+  const [OutstandingCount, setOutstandingCount] = useState(0);
   const [ApprovedListCount, setApprovedListCount] = useState(0);
   const [lostlistCount, setLostlistCount] = useState(0);
   const [progressValue, setProgressValue] = useState(0);
@@ -187,7 +187,7 @@ const Screens = () => {
       const completedOrders = postcreatevisitData.filter(
         (item) => Array.isArray(item.so_id) && item.so_id.length > 0
       );
-      const approvalPending = postcreatevisitData.filter((item) => {
+      const Outstanding = postcreatevisitData.filter((item) => {
         const stateValue = Array.isArray(item.state) ? item.state[1] : item.state;
         return stateValue === "visted";
       });
@@ -200,7 +200,7 @@ const Screens = () => {
         return stateValue?.toLowerCase() === "lost";
       });
       setCompletedCount(completedOrders.length);
-      setApprovalPendingCount(approvalPending.length);
+      setOutstandingCount(Outstanding.length);
       setApprovedListCount(approvedList.length);
       setLostlistCount(lostList.length);
 
@@ -242,14 +242,6 @@ const Screens = () => {
         contentContainerStyle={{ paddingBottom: 50 }}
       >
         <View style={styles.container}>
-          <View>
-            <Text style={styles.greeting}>
-              {greetingText},{ user.partner_display_name || 'No Name'}
-            </Text>
-            <Text style={styles.dateText}>
-              {formattedDate}
-            </Text>
-          </View>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -447,7 +439,7 @@ const Screens = () => {
                       resizeMode="contain"
                     />
                     <StatBox
-                      label="All List"
+                      label="Visit"
                       labelStyle={{ fontSize: 15, color: '#FFFDFD', fontFamily: 'Inter', fontWeight: "500", marginTop: 2 }}
                       color="transparent"
                       onPress={() => navigation.navigate('OpenEnquiry')}
@@ -472,7 +464,7 @@ const Screens = () => {
                       <StatBox
                         label="Pending"
                         color="transparent"
-                        onPress={() => navigation.navigate('ApprovalPending')}
+                        onPress={() => navigation.navigate('Outstanding')}
                         labelStyle={{ fontSize: 15, color: '#FFFDFD', fontFamily: 'Inter', fontWeight: "500", marginTop: 2 }}
                       />
                     </View>

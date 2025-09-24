@@ -50,7 +50,7 @@ const ApprovedList = () => {
         },
       },
     };
-    dispatch(postcreatevisit(payload, "approvalPendingList"));
+    dispatch(postcreatevisit(payload, "OutstandingList"));
     console.log("helloooceefef", postcreatevisit);
 
   }, [dispatch]);

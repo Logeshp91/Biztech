@@ -88,173 +88,176 @@ const Stage1 = () => {
   };
 
   return (
- <ImageBackground
-  source={require('../../../assets/backgroundimg.png')}
-  style={styles.background}
-  resizeMode="cover"
->
-    <ScrollView contentContainerStyle={styles.container}>
-      <ImageBackground
-        source={require('../../../assets/Cardstage1.png')}
-        style={styles.card}
-        imageStyle={{ borderRadius: 12 }}
-      >
-        <Text style={styles.cardTitle}>{customerName}</Text>
-        <View>
-          <View style={styles.row}>
-            <Text style={styles.cardTextlabel}>Purpose of visit</Text>
-            <Text style={styles.cardTextlabel}>Brand</Text>
-          </View>
-          <View style={styles.row2}>
-            <Text style={styles.cardText}>{purposeOfVisit}</Text>
-            <Text style={styles.cardText}>{brand}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.cardTextlabel}>Product Category</Text>
-            <Text style={styles.cardTextlabel}>Tons</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.cardText}>{productCategory}</Text>
-            <Text style={styles.cardText}>{quantityTons}</Text>
-          </View>
+    <ImageBackground
+      source={require('../../../assets/backgroundimg.png')}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        {/* Card with padding */}
+        <View style={styles.cardWrapper}>
+          <ImageBackground
+            source={require('../../../assets/Cardstage1.png')}
+            style={styles.card}
+            imageStyle={{ borderRadius: 12 }}
+          >
+            <Text style={styles.cardTitle}>{customerName}</Text>
+            <View>
+              <View style={styles.row}>
+                <Text style={styles.cardTextlabel}>Purpose of visit</Text>
+                <Text style={styles.cardTextlabel}>Brand</Text>
+              </View>
+              <View style={styles.row2}>
+                <Text style={styles.cardText}>{purposeOfVisit}</Text>
+                <Text style={styles.cardText}>{brand}</Text>
+              </View>
+              <View style={styles.row}>
+                <Text style={styles.cardTextlabel}>Product Category</Text>
+                <Text style={styles.cardTextlabel}>Tons</Text>
+              </View>
+              <View style={styles.row}>
+                <Text style={styles.cardText}>{productCategory}</Text>
+                <Text style={styles.cardText}>{quantityTons}</Text>
+              </View>
+            </View>
+          </ImageBackground>
         </View>
-      </ImageBackground>
+        <View style={styles.blackBackgroundInside}>
+          {followUpDate && (
+            <View style={styles.followUpRow}>
+              <Text style={styles.followUpLabel}>Follow-up Date:</Text>
+              <Text style={styles.followUpDate}>
+                {followUpDate.toDateString()}
+              </Text>
+            </View>
+          )}
 
-      {/* Show Follow-up Date above dropdown */}
-      {followUpDate && (
-        <View style={styles.followUpRow}>
-          <Text style={styles.followUpLabel}>Follow-up Date:</Text>
-          <Text style={styles.followUpDate}>
-            {followUpDate.toDateString()}
-          </Text>
-        </View>
-      )}
+          {lostReason && (
+            <View style={styles.followUpRow}>
+              <Text style={styles.followUpLabel}>Lost Reason:</Text>
+              <Text style={styles.followUpDate}>
+                {LostReason.find(l => l.value === lostReason)?.label}
+              </Text>
+            </View>
+          )}
 
-      {/* Show Lost Reason above dropdown */}
-      {lostReason && (
-        <View style={styles.followUpRow}>
-          <Text style={styles.followUpLabel}>Lost Reason:</Text>
-          <Text style={styles.followUpDate}>
-            {LostReason.find(l => l.value === lostReason)?.label}
-          </Text>
-        </View>
-      )}
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Visit Outcome</Text>
+            <Dropdown
+              style={styles.dropdownmain}
+              data={visitOutcomes}
+              labelField="label"
+              valueField="value"
+              placeholder="Select Visit Outcome"
+              value={visitOutcome}
+              onChange={item => {
+                setVisitOutcome(item.value);
 
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Visit Outcome</Text>
-        <Dropdown
-          style={styles.dropdownmain}
-          data={visitOutcomes}
-          labelField="label"
-          valueField="value"
-          placeholder="Select Visit Outcome"
-          value={visitOutcome}
-          onChange={item => {
-            setVisitOutcome(item.value);
+                if (item.value === 'REMINDER') {
+                  setShowReminderModal(true);
+                } else {
+                  setFollowUpDate(null);
+                }
 
-            if (item.value === 'REMINDER') {
-              setShowReminderModal(true);
-            } else {
-              setFollowUpDate(null);
-            }
+                if (item.value === 'LOST') {
+                  setShowLostReasonModal(true);
+                } else {
+                  setLostReason('');
+                }
+              }}
+              placeholderStyle={{ color: '#c6c4c4ff', fontSize: 11.5 }}
+              selectedTextStyle={styles.dropdownSelectedText}
+            />
 
-            if (item.value === 'LOST') {
-              setShowLostReasonModal(true);
-            } else {
-              setLostReason('');
-            }
-          }}
-          placeholderStyle={{ color: '#c6c4c4ff', fontSize: 11.5 }}
-          selectedTextStyle={styles.dropdownSelectedText} 
-        />
-
-        <Text style={styles.label}>Remarks</Text>
-        <TextInput
-          style={styles.input}
-          value={remarks}
-          onChangeText={setRemarks}
-          placeholder="Enter remarks"
-          placeholderTextColor="#c6c4c4"
-        />
-      </View>
-
-      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-        <Text style={styles.buttonText}>Submit</Text>
-      </TouchableOpacity>
-
-      {/* Reminder Modal */}
-      <Modal
-        animationType="slide"
-        transparent
-        visible={showReminderModal}
-        onRequestClose={() => setShowReminderModal(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalText}>Select a reminder date:</Text>
-            <TouchableOpacity
-              style={[styles.dateButton, { marginBottom: 15 }]}
-              onPress={() => setShowDatePicker(true)}
-            >
-              <Text style={styles.dateText}>{followUpDate ? followUpDate.toDateString() : 'Select Date'}</Text>
-            </TouchableOpacity>
-
-            {showDatePicker && (
-              <DateTimePicker
-                value={reminderDate}
-                mode="date"
-                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                onChange={(event, selectedDate) => {
-                  const currentDate = selectedDate || reminderDate;
-                  setShowDatePicker(Platform.OS === 'ios');
-                  setReminderDate(currentDate);
-                  setFollowUpDate(currentDate);
-                }}
-              />
-            )}
-
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => setShowReminderModal(false)}
-            >
-              <Text style={styles.buttonText}>Confirm</Text>
-            </TouchableOpacity>
+            <Text style={styles.label}>Remarks</Text>
+            <TextInput
+              style={styles.input}
+              value={remarks}
+              onChangeText={setRemarks}
+              placeholder="Enter remarks"
+              placeholderTextColor="#c6c4c4"
+            />
           </View>
-        </View>
-      </Modal>
 
-      {/* Lost Reason Modal */}
-      <Modal
-        animationType="slide"
-        transparent
-        visible={showLostReasonModal}
-        onRequestClose={() => setShowLostReasonModal(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalText}>Select Lost Reason:</Text>
-            {LostReason.map(reason => (
-              <TouchableOpacity
-                key={reason.value}
-                style={{
-                  padding: 10,
-                  borderBottomWidth: 1,
-                  borderColor: '#ccc',
-                  width: '100%',
-                  alignItems: 'center',
-                }}
-                onPress={() => {
-                  setLostReason(reason.value);
-                  setShowLostReasonModal(false);
-                }}
-              >
-                <Text>{reason.label}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
+          <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+            <Text style={styles.buttonText}>Submit</Text>
+          </TouchableOpacity>
+
+          {/* Reminder Modal */}
+          <Modal
+            animationType="slide"
+            transparent
+            visible={showReminderModal}
+            onRequestClose={() => setShowReminderModal(false)}
+          >
+            <View style={styles.modalOverlay}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalText}>Select a reminder date:</Text>
+                <TouchableOpacity
+                  style={[styles.dateButton, { marginBottom: 15 }]}
+                  onPress={() => setShowDatePicker(true)}
+                >
+                  <Text style={styles.dateText}>{followUpDate ? followUpDate.toDateString() : 'Select Date'}</Text>
+                </TouchableOpacity>
+
+                {showDatePicker && (
+                  <DateTimePicker
+                    value={reminderDate}
+                    mode="date"
+                    display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                    onChange={(event, selectedDate) => {
+                      const currentDate = selectedDate || reminderDate;
+                      setShowDatePicker(Platform.OS === 'ios');
+                      setReminderDate(currentDate);
+                      setFollowUpDate(currentDate);
+                    }}
+                  />
+                )}
+
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={() => setShowReminderModal(false)}
+                >
+                  <Text style={styles.buttonText}>Confirm</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
+
+          {/* Lost Reason Modal */}
+          <Modal
+            animationType="slide"
+            transparent
+            visible={showLostReasonModal}
+            onRequestClose={() => setShowLostReasonModal(false)}
+          >
+            <View style={styles.modalOverlay}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalText}>Select Lost Reason:</Text>
+                {LostReason.map(reason => (
+                  <TouchableOpacity
+                    key={reason.value}
+                    style={{
+                      padding: 10,
+                      borderBottomWidth: 1,
+                      borderColor: '#ccc',
+                      width: '100%',
+                      alignItems: 'center',
+                    }}
+                    onPress={() => {
+                      setLostReason(reason.value);
+                      setShowLostReasonModal(false);
+                    }}
+                  >
+                    <Text>{reason.label}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+          </Modal>
         </View>
-      </Modal>
-    </ScrollView>
+      </ScrollView>
+
     </ImageBackground>
   );
 };
@@ -264,7 +267,7 @@ export default Stage1;
 
 
 const styles = StyleSheet.create({
-    background: {
+  background: {
     flex: 1,
     width: "100%",
     height: "100%",
@@ -286,7 +289,18 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
 
   },
-    row2: {
+  cardWrapper: {
+    padding: 25,       // only the card has padding
+  },
+  blackBackgroundInside: {
+    marginTop: 15,
+    backgroundColor: '#CCCFEB',
+    borderRadius: 12,
+    padding: 25,       // ✅ padding only here
+    width: '100%',
+    height: "100%"
+  },
+  row2: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 10,
@@ -297,18 +311,27 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     textAlign: 'center',
     marginTop: '5%',
-      fontFamily: 'Inter-Regular',
+    fontFamily: 'Inter-Regular',
   },
   cardTextlabel: {
     fontSize: 13,
     color: '#9b9a9aff',
     alignSelf: 'flex-end',
-    fontFamily: 'Inter-Regular', 
+    fontFamily: 'Inter-Regular',
   },
   cardText: {
     fontSize: 15,
     color: '#eee',
     justifyContent: 'flex-end'
+  },
+  blackBackground: {
+    marginTop: 20,
+    backgroundColor: '#000',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 20,
+    flex: 1,
+    width: "100%"
   },
   inputContainer: {
     marginBottom: 10,
@@ -318,21 +341,21 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     color: '#f9f9f9ff',
   },
-input: {
-  borderWidth: 1,
-  borderColor: '#ffffffff',
-  borderRadius: 8,
-  height: 40, 
-  paddingHorizontal: 15, 
-  marginTop:1,
-  paddingVertical: Platform.OS === 'ios' ? 14 : 12, 
-  marginBottom: 16,
-  backgroundColor: '#ffffff',
-  fontSize: 14
-},
+  input: {
+    borderWidth: 1,
+    borderColor: '#ffffffff',
+    borderRadius: 8,
+    height: 40,
+    paddingHorizontal: 15,
+    marginTop: 1,
+    paddingVertical: Platform.OS === 'ios' ? 14 : 12,
+    marginBottom: 16,
+    backgroundColor: '#ffffff',
+    fontSize: 14
+  },
 
   button: {
-    backgroundColor: '#0452A6',
+    backgroundColor: '#373E89',
     padding: 14,
     borderRadius: 10,
     alignItems: 'center',
@@ -366,10 +389,10 @@ input: {
     borderColor: '#0452A6'
   },
   dropdownSelectedText: {
-  fontSize: 14,       
-  color: '#000',      
-  fontFamily: 'Inter-Regular', 
-},
+    fontSize: 14,
+    color: '#000',
+    fontFamily: 'Inter-Regular',
+  },
   dateButton: {
     borderWidth: 1,
     padding: 12,
@@ -419,6 +442,36 @@ input: {
   followUpDate: {
     fontSize: 13,
     color: '#ffffffff',
+    fontWeight: '500',
+  },
+  detailsCard: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 20,
+    marginTop: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3, // Android shadow
+  },
+
+  detailRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+
+  detailLabel: {
+    fontSize: 13,
+    color: '#666',
+    fontWeight: '600',
+  },
+
+  detailValue: {
+    fontSize: 13,
+    color: '#111',
     fontWeight: '500',
   },
 

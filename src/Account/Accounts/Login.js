@@ -247,7 +247,7 @@ const getSimNumbers = async () => {
     const loginPayload = {
       jsonrpc: '2.0',
       params: {
-        db: 'siddhi_live_1609_01pm',
+        db: 'siddhi_live_24092025',
         login: phone.trim(),
         password: password.trim(),
         latitude: location.latitude,

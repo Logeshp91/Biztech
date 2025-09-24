@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { postcreatevisit, postAccessRead } from "../../../redux/action";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 
-const ApprovalPending = () => {
+const Outstanding = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
@@ -312,7 +312,7 @@ const onHandlingVerify = async (id) => {
   );
 };
 
-export default ApprovalPending;
+export default Outstanding;
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 15, backgroundColor: "#f2f2f2" },

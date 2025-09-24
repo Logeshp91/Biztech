@@ -30,9 +30,9 @@ const CreateVisit = () => {
     const backAction = () => {
       navigation.reset({
         index: 0,
-        routes: [{ name: 'TabNavigation' }],
+        routes: [{ name: 'OpenEnquiry' }],
       });
-      return true; // prevent default back action
+      return true; 
     };
 
     const backHandler = BackHandler.addEventListener(
@@ -172,7 +172,7 @@ const CreateVisit = () => {
 
     try {
       await dispatch(postcreatevisit(payload));
-      navigation.navigate('TabNavigation')
+      navigation.navigate('OpenEnquiry')
       console.log("visiteddd", postcreatevisit)
       console.log("payload", payload);
       alert("Visit marked as visited!");

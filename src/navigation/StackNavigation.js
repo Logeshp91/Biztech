@@ -12,13 +12,14 @@ import Stage2 from '../Account/Accounts/dashboard/Stage2';
 import CompletedOrder from '../Account/Accounts/dashboard/CompletedOrder';
 import CompletedOrderStage2 from '../Account/Accounts/dashboard/CompletedOrderStage2';
 import OpenEnquiry from '../Account/Accounts/dashboard/OpenEnquiry';
-import ApprovalPending from '../Account/Accounts/dashboard/ApprovalPending';
+import Outstanding from '../Account/Accounts/dashboard/Outstanding';
 import ApprovedList from '../Account/Accounts/dashboard/ApprovedList';
 import LostList from '../Account/Accounts/dashboard/LostList';
 import SonumberList from '../Account/Accounts/dashboard/salesOrder/SonumberList';
 import SonumberSaleOrder from '../Account/Accounts/dashboard/salesOrder/SonumberSaleOrder';
 import BillSummary from '../Account/Accounts/dashboard/salesOrder/BillSummary';
 import ProductList from '../Account/Accounts/dashboard/salesOrder/ProductList';
+import ProductDetailed from '../Account/Accounts/dashboard/salesOrder/ProductDetailed';
 
 const Stack = createNativeStackNavigator();
 
@@ -37,13 +38,15 @@ const StackNavigation = () => {
         <Stack.Screen options={{ headerShown: false }} name="OpenEnquiry" component={OpenEnquiry} />
         <Stack.Screen options={{ headerShown: false }} name="CompletedOrder" component={CompletedOrder} />
         <Stack.Screen options={{ headerShown: false }} name="CompletedOrderStage2" component={CompletedOrderStage2} />
-        <Stack.Screen options={{ headerShown: false }} name="ApprovalPending" component={ApprovalPending} />
+        <Stack.Screen options={{ headerShown: false }} name="Outstanding" component={Outstanding} />
         <Stack.Screen options={{ headerShown: false }} name="ApprovedList" component={ApprovedList} />
         <Stack.Screen options={{ headerShown: false }} name="LostList" component={LostList} />
         <Stack.Screen options={{ headerShown: false }} name="SonumberList" component={SonumberList} />
         <Stack.Screen options={{ headerShown: false }} name="SonumberSaleOrder" component={SonumberSaleOrder} />
         <Stack.Screen options={{ headerShown: false }} name="BillSummary" component={BillSummary} />
         <Stack.Screen options={{ headerShown: false }} name="ProductList" component={ProductList} />
+        <Stack.Screen options={{ headerShown: false }} name="ProductDetailed" component={ProductDetailed} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

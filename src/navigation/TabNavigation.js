@@ -21,7 +21,7 @@ const Drawer = createDrawerNavigator();
 
 const TabNavigation = () => {
   const [modalVisible, setModalVisible] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false); 
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [isPanelVisible, setIsPanelVisible] = useState(false);
   const [notificationVisible, setNotificationVisible] = useState(false);
   const PANEL_WIDTH = 250;
@@ -45,7 +45,20 @@ const TabNavigation = () => {
     Contact: { lib: FontAwesome6, active: 'folder-minus', inactive: 'folder-minus', size: 23 },
     About: { lib: MaterialIcons, active: 'bar-chart', inactive: 'bar-chart', size: 26 },
   };
+  const now = new Date();
+  const options = { weekday: 'long', month: 'short', day: 'numeric' };
+  const formattedDate = now.toLocaleDateString('en-US', options);
 
+  const hours = now.getHours();
+
+  let greetingText = '';
+  if (hours < 12) {
+    greetingText = 'Good Morning';
+  } else if (hours < 17) {
+    greetingText = 'Good Afternoon';
+  } else {
+    greetingText = 'Good Evening';
+  }
   useEffect(() => {
     if (isPanelVisible) {
       slideAnim.setValue(PANEL_WIDTH);
@@ -116,6 +129,7 @@ const TabNavigation = () => {
 
       <Drawer.Navigator
         drawerContent={props => <CustomDrawerContent {...props} />}
+         drawerPosition="right" 
         screenOptions={{
           drawerStyle: {
             backgroundColor: "#FFFFFF", width: "55%", height: "90.5%", marginTop: "6.5%", borderTopRightRadius: 15,
@@ -137,28 +151,22 @@ const TabNavigation = () => {
           options={({ navigation }) => ({
             headerShown: true,
             headerLeft: () => (
-              <TouchableOpacity
-                style={{ marginLeft: 15 }}
-                onPress={() => navigation.toggleDrawer()}
-              >
-                <Icon name="menu" size={23} color="#FFFFFF" />
-              </TouchableOpacity>
+              <View style={{ flexDirection: 'row', marginLeft: 15 }}>
+                <View>
+                  <Text style={styles.greetingValue}> {user.username || 'No Username'}
+                  </Text>
+                  <Text style={styles.greeting}>
+                    {greetingText}, {formattedDate}</Text>
+                </View>
+              </View>
             ),
             headerRight: () => (
               <View style={styles.headerRightWrapper}>
-
-                <View style={styles.circleAvatar}>
-                  <Text style={styles.avatarLetter}>{firstLetter}</Text> 
-                </View>
-                {/* <TouchableOpacity
-          style={styles.notificationButton}
-          onPress={() => setIsPanelVisible(true)}
-        >
-          <Icon name="notifications-outline" size={24} color="#fff" />
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>3</Text>
-          </View>
-        </TouchableOpacity> */}
+             <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
+  <View style={styles.circleAvatar}>
+    <Text style={styles.avatarLetter}>{firstLetter}</Text>
+  </View>
+</TouchableOpacity>
               </View>
             ),
           })}
@@ -171,24 +179,24 @@ const TabNavigation = () => {
               <Tab.Navigator
                 screenOptions={({ route }) => ({
                   tabBarIcon: ({ focused, color, size }) => {
-                    const IconLib = tabIcons[route.name].lib;      // Get the library
+                    const IconLib = tabIcons[route.name].lib;
                     const iconName = focused
-                      ? tabIcons[route.name].active               // Active icon
+                      ? tabIcons[route.name].active              
                       : tabIcons[route.name].inactive;
-                    const iconSize = tabIcons[route.name].size;            // Inactive icon
+                    const iconSize = tabIcons[route.name].size;            
                     return <IconLib name={iconName} size={iconSize} color={color} />;
                   },
                   tabBarActiveTintColor: '#1468F5',
                   tabBarInactiveTintColor: '#747171',
                   tabBarStyle: {
-                    backgroundColor: '#FFFFFF', 
-                    borderTopWidth: 0,         
-                    elevation: 0,               
-                    shadowOpacity: 0,           
+                    backgroundColor: '#FFFFFF',
+                    borderTopWidth: 0,
+                    elevation: 0,
+                    shadowOpacity: 0,
                     width: "100%",
                     alignSelf: "center",
                     borderRadius: 10,
-                    marginTop: 0,               
+                    marginTop: 0,
                   },
                   tabBarLabelStyle: { fontSize: 10, marginLeft: 1 },
                 })}
@@ -267,7 +275,7 @@ const TabNavigation = () => {
 
           <TouchableOpacity
             style={styles.closePanelBtn}
-            onPress={() => setIsPanelVisible(false)} 
+            onPress={() => setIsPanelVisible(false)}
           >
             <Text style={styles.closePanelText}>Close</Text>
           </TouchableOpacity>
@@ -308,6 +316,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
     fontFamily: 'Inter-Bold',
+  },
+  greeting: {
+    color: "#fff",
+    fontSize: 13,
+    marginLeft:5
+  },
+  greetingValue: {
+    color: "#fff",
+    fontSize: 22,
+    marginVertical:2,
   },
   overlay: {
     flex: 1,
@@ -394,7 +412,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginRight: 10,
-    gap: 10, 
+    gap: 10,
   },
   notificationButton: {
     position: 'relative',
