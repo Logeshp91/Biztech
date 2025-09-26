@@ -29,7 +29,8 @@ const OpenEnquiry = () => {
   const [clickedSoId, setClickedSoId] = useState(null);
   const [soProducts, setSoProducts] = useState({});
   const [loadingProducts, setLoadingProducts] = useState({});
-
+const [selectedSO, setSelectedSO] = useState(null);
+const [clickedSOName, setClickedSOName] = useState(null);
 
 
   useFocusEffect(
@@ -48,6 +49,29 @@ const OpenEnquiry = () => {
     }, [navigation])
   );
 
+  useEffect(() => {
+  if (selectedSO && productsData) {
+    const soData = soDetails && soDetails.length > 0 ? soDetails[0] : null;  
+navigation.navigate("VisitSoBillSummary", {
+      products: selectedSO.products,
+      form: {
+        name: soData?.name || selectedSO.so_number,
+        company_id: soData?.company_id?.[1] || selectedSO.billing_branch,
+        amount_untaxed: soData?.amount_untaxed || 0,
+        amount_tax: soData?.amount_tax || 0,
+        amount_total: soData?.amount_total || 0,
+        mobile: soData?.mobile || "",
+    partner_invoice_name: soData?.partner_invoice_id?.[1] || null, 
+    partner_shipping_name: soData?.partner_shipping_id?.[1] || null,
+      },
+      taxDetails: [],
+    });
+
+    setSelectedSO(null); 
+  }
+}, [soDetails, selectedSO, navigation]);
+
+
   const uid = useSelector((state) => state.postauthendicationReducer.uid);
   const postcreatevisitLoading = useSelector(
     (state) => state.postcreatevisitReducer.loading["openEnquiryList"]
@@ -60,6 +84,9 @@ const OpenEnquiry = () => {
   );
   const productsData = useSelector(
     (state) => state.postcreatevisitReducer.data["soProducts"]
+  );  
+  const soDetails = useSelector(
+    (state) => state.postcreatevisitReducer.data["soDetails"]
   );
 
   const fetchEnquiries = useCallback(() => {
@@ -97,11 +124,34 @@ const OpenEnquiry = () => {
     dispatch(postcreatevisit(payload, "openEnquiryList"));
   }, [dispatch]);
 
-
-
   useEffect(() => {
     fetchEnquiries();
   }, [fetchEnquiries]);
+  useEffect(() => {
+  if (soDetails) {
+    if (Array.isArray(soDetails) && soDetails.length > 0) {
+    }
+  }
+}, [soDetails]);
+
+useEffect(() => {
+  if (!clickedSOName || !soDetails) return;
+
+  const soData = Array.isArray(soDetails) && soDetails.length > 0 ? soDetails[0] : null;
+  if (!soData) return;
+
+  // Find the enquiry that matches the clicked SO
+  const item = enquiries.find(e => e.so_number === clickedSOName);
+  if (!item) return;
+
+  setSelectedSO({
+    ...item,
+    soDetails: soData,
+    products: item.products, // keep the products if already present
+  });
+
+  setClickedSOName(null); // reset after updating
+}, [soDetails, clickedSOName, enquiries]);
 
   useEffect(() => {
     if (!productsData) return;
@@ -145,6 +195,22 @@ const OpenEnquiry = () => {
     const strHours = String(hours).padStart(2, "0");
     return `${day}/${month}/${year} ${strHours}:${minutes} ${ampm}`;
   };
+  useEffect(() => {
+  if (!clickedSoId) return;
+  
+
+  const soData = soProducts[clickedSoId];
+  if (soData) {
+    // Now you can safely set your item.products or do anything
+    setEnquiries(prev =>
+      prev.map(item =>
+        item.id === clickedSoId ? { ...item, products: soData } : item
+      )
+    );
+    setLoadingProducts(prev => ({ ...prev, [clickedSoId]: false }));
+  }
+}, [soProducts, clickedSoId]);
+
 
   useEffect(() => {
     if (Array.isArray(postcreatevisitData)) {
@@ -199,7 +265,8 @@ const OpenEnquiry = () => {
             name: prod.name,
             qty: prod.product_uom_qty,
             price: prod.price_unit,
-            subtotal: prod.price_subtotal
+            subtotal: prod.price_subtotal,
+            qty_delivered: prod.qty_delivered
           }))
         };
       });
@@ -207,6 +274,8 @@ const OpenEnquiry = () => {
       setEnquiries(normalizedData);
     }
   }, [postcreatevisitData, soProducts]);
+
+  
 
   const filteredEnquiries = enquiries.filter((item) => {
     const text = searchText.toLowerCase();
@@ -253,16 +322,16 @@ const OpenEnquiry = () => {
             kwargs: {
               domain: [["order_id", "=", soNumber]],
               fields: [
-                "id",
-                "name",
-                "product_template_id",
-                "product_uom_qty",
-                "qty_delivered",
-                "qty_invoiced",
-                "price_unit",
-                "tax_id",
-                "price_subtotal",
-                "order_id",
+             "id",
+            "name",
+            "product_template_id",
+            "product_uom_qty",
+            "qty_delivered",
+            "qty_invoiced",
+            "price_unit",
+            "tax_id",
+            "price_subtotal",
+            "order_id",
               ],
             },
           },
@@ -272,26 +341,47 @@ const OpenEnquiry = () => {
     };
 
     const handlePress = () => {
-      if (status === "visited" || status === "visted") return;
+    if (status === "visited" || status === "visted" || status === "lost") return;
       navigation.navigate("Stage1", { enquiryData: item });
     };
 
+
+    
 const handleProductPress = (item) => {
-  navigation.navigate("BillSummary", {
-    products: item.products,
-    form: {
-      name: item.so_number,
-      company_id: item.billing_branch, 
-      amount_untaxed: item.amount_untaxed,
-      amount_tax: item.amount_tax,
-      amount_total: item.amount_total,
-      mobile: item.mobile,
-      partner_invoice_id: item.billing_branch,
-      partner_shipping_id: item.billing_branch,
+  const soName = item.so_number;
+  if (!soName || soName.trim() === "-") return;
+
+  setClickedSOName(soName); // track which SO was clicked
+
+  const payload = {
+    jsonrpc: "2.0",
+    method: "call",
+    params: {
+      model: "sale.order",
+      method: "search_read",
+      args: [],
+      kwargs: {
+        domain: [["name", "=", soName]],
+        fields: [
+          "id",
+          "name",
+          "company_id",
+          "mobile",
+          "partner_invoice_id",
+          "partner_shipping_id",
+          "billing_branch_id",
+          "amount_untaxed",
+          "amount_tax",
+          "amount_total",
+          "order_line",
+        ],
+      },
     },
-    taxDetails: [], 
-  });
+  };
+
+  dispatch(postcreatevisit(payload, "soDetails"));
 };
+
     return (
       <View>
         <View style={styles.card}>
@@ -793,4 +883,4 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: "center",
   },
-});
+}); 

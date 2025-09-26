@@ -256,9 +256,7 @@ const getSimNumbers = async () => {
     };
     dispatch(postauthendication(loginPayload));
   };
-
   const isLoginEnabled = phone && password && gpsEnabled && location;
-
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <KeyboardAvoidingView

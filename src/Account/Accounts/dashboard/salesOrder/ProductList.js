@@ -126,7 +126,6 @@ const ProductList = () => {
           </View>
         )}
       />
-
     </ImageBackground>
   );
 };

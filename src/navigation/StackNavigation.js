@@ -20,6 +20,7 @@ import SonumberSaleOrder from '../Account/Accounts/dashboard/salesOrder/Sonumber
 import BillSummary from '../Account/Accounts/dashboard/salesOrder/BillSummary';
 import ProductList from '../Account/Accounts/dashboard/salesOrder/ProductList';
 import ProductDetailed from '../Account/Accounts/dashboard/salesOrder/ProductDetailed';
+import VisitSoBillSummary from '../Account/Accounts/dashboard/salesOrder/VisitSoBillSummary';
 
 const Stack = createNativeStackNavigator();
 
@@ -46,7 +47,7 @@ const StackNavigation = () => {
         <Stack.Screen options={{ headerShown: false }} name="BillSummary" component={BillSummary} />
         <Stack.Screen options={{ headerShown: false }} name="ProductList" component={ProductList} />
         <Stack.Screen options={{ headerShown: false }} name="ProductDetailed" component={ProductDetailed} />
-
+        <Stack.Screen options={{ headerShown: false }} name="VisitSoBillSummary" component={VisitSoBillSummary} />
       </Stack.Navigator>
     </NavigationContainer>
   );

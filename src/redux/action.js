@@ -4,11 +4,12 @@ export const postauthendication = (payload,results,) => ({
   type: actionTypes.POST_POSTAUTHENDICATION_REQUEST,
   payload,results
 });
-export const postcreatevisit = (payload, requestKey) => {
+export const postcreatevisit = (payload, requestKey,resolve) => {
   return {
     type: actionTypes.POST_CREATEVISIT_REQUEST,
     payload,
     requestKey,
+    resolve
   };
 };
 export const postAccessRead = (payload, requestKey) => {

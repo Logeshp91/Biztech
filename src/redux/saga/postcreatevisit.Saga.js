@@ -17,7 +17,9 @@ function* postcreatevisitSaga(action) {
         type: actionTypes.POST_CREATEVISIT_SUCCESS,
         payload: response?.data?.result,
         requestKey,
+        
       });
+         if (resolve) resolve(response.data.result);
     } else {
       yield put({
         type: actionTypes.POST_CREATEVISIT_FAILURE,
